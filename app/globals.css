@@ -1,26 +1,189 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------ */
+/*  REGAL 360° — Design System                                         */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* Brand surfaces */
+  --color-ink: #0b0b0d;
+  --color-ink-2: #121215;
+  --color-ink-3: #18181c;
+  --color-cream: #f6f2e8;
+  --color-cream-2: #efe9da;
+  --color-paper: #ffffff;
+
+  /* Brand accent (from the REGAL logo) */
+  --color-brand: #e2662c;
+  --color-brand-bright: #ff6b1a;
+  --color-brand-deep: #b94a18;
+
+  /* Text */
+  --color-muted: #9a9aa1;
+  --color-muted-dark: #6c6c73;
+
+  /* Lines */
+  --color-hair: rgba(255, 255, 255, 0.1);
+  --color-hair-dark: rgba(11, 11, 13, 0.12);
+
+  /* Fonts (wired to next/font variables in layout.tsx) */
+  --font-display: var(--font-archivo), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Radii */
+  --radius-pill: 999px;
+  --radius-panel: 40px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto; /* Lenis handles smoothing */
+  background: var(--color-ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a30;
+  border-radius: 999px;
+  border: 2px solid var(--color-ink);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Typography helpers                                                 */
+/* ------------------------------------------------------------------ */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1.4px currentColor;
+  color: transparent;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Effects                                                            */
+/* ------------------------------------------------------------------ */
+
+/* Film grain overlay */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  z-index: 30;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Reveal mask — used for text/line reveals before GSAP hydrates */
+.will-reveal {
+  opacity: 0;
+}
+.will-reveal-y {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* Marquee (CSS fallback / partner strip) */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee-x var(--marquee-duration, 30s) linear infinite;
+}
+.marquee-pause:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Highlight chips (hero) */
+.hl {
+  display: inline-block;
+  padding: 0 0.18em;
+  border-radius: 0.12em;
+}
+.hl-brand {
+  background: var(--color-brand);
+  color: #fff;
+}
+.hl-ink {
+  background: #2a2118;
+  color: #fff;
+}
+
+/* Soft focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+/* Accordion grid animation */
+.acc-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease-out-expo);
+}
+.acc-body.open {
+  grid-template-rows: 1fr;
+}
+.acc-body > div {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
 }
